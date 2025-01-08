@@ -1,0 +1,40 @@
+version: '3.8'
+
+networks:
+  custom_network: 
+    driver: bridge
+
+services:
+  backend:
+    image: techdome-backend:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    networks:
+      - custom_network  
+  frontend:
+    image: techdome-frontend:latest
+    ports:
+      - "81:80"
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    networks:
+      - custom_network  
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - custom_network  
+volumes:
+  mongo-data:
+
